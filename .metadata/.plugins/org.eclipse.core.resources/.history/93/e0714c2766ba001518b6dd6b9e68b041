@@ -1,0 +1,35 @@
+import java.util.ArrayList;
+
+/*
+ * The prime factors of 13195 are 5, 7, 13 and 29.
+ * What is the largest prime factor of the number 600851475143 ?
+ */
+
+/*
+ * SOLUTION: Given a number N, that is NOT a prime number, the solution will be as 
+ * follows:
+ * 
+ * 1. Generate a list of all primes less than n = N/2. I stop at N/2 because if n
+ *    prime then the prime factorization will be n and 2 so any prime greater than 
+ *    n cannot be used in the factorization. 
+ * 2. Go through the list and divide 600851475143 by each number n_i. If mod n_i is 
+ * 	  equal to zero then we know that number is a prime factor.
+ * 3. Add n_i to a prime factor list and then repeat. 
+ * 4. If mod n_i is not zero go to the next number on the list. 
+ * 
+ * This method should work only if N is not prime. If N is prime then prime list 
+ * in step 1 will have to list prime numbers from 1 to N. 
+ */
+public class Prob_3 {
+
+	public static void main(String[] args) {
+		primeNumberList (1); 
+	}
+	
+	public static ArrayList<Integer> primeNumberList (int upperBound){
+		ArrayList<Integer> list= new ArrayList<Integer> (100); 
+		
+		System.out.println(list.size());
+		return list; 
+	}
+}

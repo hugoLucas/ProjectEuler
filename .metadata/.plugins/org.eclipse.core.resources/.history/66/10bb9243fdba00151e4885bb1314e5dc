@@ -1,0 +1,48 @@
+import java.util.ArrayList;
+
+/*
+ * The prime factors of 13195 are 5, 7, 13 and 29.
+ * What is the largest prime factor of the number 600851475143 ?
+ */
+public class Prob_3 {
+
+	public static void main(String[] args) {
+		long primeToFactor = 600851475143L; 
+		long test = 13195; 
+		
+		System.out.println(primeFactorization(100));
+	}
+	
+	public static ArrayList<Long> primeFactorization (long toFactor){
+		ArrayList<Long> list = new ArrayList<Long>();
+		
+		long index = 2; 
+		long tF = toFactor;
+		while ( tF != 1 & index <= (long) Math.sqrt(toFactor)){
+			if (isPrime(index) & tF % index == 0){
+				list.add(index); 
+				while (tF % index == 0)
+					tF = tF / index; 
+			}
+			index ++; 
+		}
+		return list; 
+	}
+	
+	public static boolean isPrime (long candidate){
+		if (candidate <= 3)
+			return true; 
+		else if (candidate % 2 == 0 || candidate % 3 == 0)
+			return false; 
+		
+		long index = 5; 
+		while (index*index <= candidate){
+			if (candidate % index == 0 || candidate % (index + 2) == 0)
+				return false; 
+			
+			index += 6; 
+		}
+		
+		return false; 
+	}
+}
