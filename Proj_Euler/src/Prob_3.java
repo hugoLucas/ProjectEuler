@@ -7,8 +7,7 @@ import java.util.ArrayList;
 public class Prob_3 {
 
 	public static void main(String[] args) {
-		long primeToFactor = 600851475143L; 
-		long test = 13195; 
+		long primeToFactor = 600851475143L;  
 	
 		System.out.println(primeFactorization(primeToFactor));
 	}
