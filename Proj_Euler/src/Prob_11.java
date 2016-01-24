@@ -32,22 +32,76 @@ import java.util.ArrayList;
  * What is the greatest product of four adjacent numbers in the same direction 
  * (up, down, left, right, or diagonally) in the 20×20 grid?
  */
+
+/*
+ * SOLUTION: Taking a file containing the number above as an input, this program
+ * will parse that file and input each number into a "matrix". This matrix will be
+ * a two dimensional array consisting of a mother array that tracks the row number
+ * and a child array for each element in that row (i.e. the second number of the 
+ * third row in the list above will be the second element of the array list 
+ * referenced by the mother array's third element). Next we will loop through this
+ * matrix starting at the first row, and ending at the 20th, and visit each 
+ * element in that row and every subsequent row. Using helper methods, we will then
+ * check if there are enough numbers in every direction to calculate any product (e.g.
+ * are there enough elements "above" the third number in the second row to calculate
+ * the product of that the number and the three numbers on top of it). Using the 
+ * results of those methods we will then compute all possible products and
+ * compare them to the current max. At the end of the loop we should be left with 
+ * the largest product possible. 
+ */
+
 public class Prob_11 {
 		
 	final static int height = 20; 
 	final static int width = 20; 
+	final static int productLength = 4; 
+	
+	static int maxProduct = 0; 
+	static ArrayList<ArrayList<Integer>> inputMatrix;
 	
 	public static void main(String[] args) throws IOException{
 		
 		try{
 			File inputFile = new File("c:\\Users\\Hugo Lucas\\Documents\\Prob_11_Info.txt"); 
-			ArrayList<ArrayList<Integer>> inputMatrix = fileToMatrix(inputFile); 
+			inputMatrix = fileToMatrix(inputFile); 
+			traverseMatrix(inputMatrix); 
+			System.out.println(maxProduct); 
 			
-			System.out.println(inputMatrix);
 		}catch (IOException e){
 			System.out.println("Check file path!");
 			e.printStackTrace();
 		}
+	}
+	
+	public static void traverseMatrix (ArrayList<ArrayList<Integer>> matrix){
+		
+		for (int y = 0; y < matrix.size(); y ++){
+			boolean down = down(y); 
+			boolean up = up(y);
+			
+			for (int x = 0; x < matrix.get(y).size(); x++){
+				boolean right = right(x); 
+				boolean left = left(x);
+				
+				if(down)
+					max(computeProduct("d", x, y));
+				if(up)
+					max(computeProduct("u", x, y)); 
+				if(left)
+					max(computeProduct("l", x, y));
+				if(right)
+					max(computeProduct("r", x, y));
+				
+				if(down & right)
+					max(computeProduct("dr", x, y));
+				if(up & right)
+					max(computeProduct("ur", x, y)); 
+				if(down & left)
+					max(computeProduct("dl", x, y));
+				if(up & left)
+					max(computeProduct("ul", x, y));
+			} 
+		} 
 	}
 	
 	public static ArrayList<ArrayList<Integer>> fileToMatrix (File input) throws IOException{
@@ -60,7 +114,6 @@ public class Prob_11 {
 		int row = 0; 
 		while(fileReader.ready()){
 			char buf[] = fileReader.readLine().toCharArray();
-			System.out.println(buf); 
 			for(int i = 0; i < buf.length; i = i + 3)
 				matrix.get(row).add((Character.getNumericValue(buf[i])*10) 
 						+ (Character.getNumericValue(buf[i+1]))); 
@@ -70,5 +123,72 @@ public class Prob_11 {
 		
 		fileReader.close();
 		return matrix;
+	}
+	
+	public static boolean up (int y){
+		if ( y <= 2)
+			return false; 
+		return true; 
+	}
+	
+	public static boolean down (int y){
+		if ( y >= 17)
+			return false; 
+		return true; 
+	}
+	
+	public static boolean left (int x){
+		if ( x <= 2)
+			return false; 
+		return true; 
+	}
+	
+	public static boolean right (int x){
+		if ( x >= 17)
+			return false; 
+		return true; 
+	}
+	
+	public static int computeProduct(String direction, int x, int y){
+		int product = 1; 
+		
+		if(direction.equals("u"))
+			for(int yCord = 0; yCord < productLength; yCord++)
+				product = product * inputMatrix.get(y - yCord).get(x); 
+		
+		else if (direction.equals("d"))
+			for(int yCord = 0; yCord < productLength; yCord++)
+				product = product * inputMatrix.get(y + yCord).get(x); 
+		
+		else if (direction.equals("r"))
+			for(int xCord = 0; xCord < productLength; xCord++)
+				product = product * inputMatrix.get(y).get(x + xCord); 
+		
+		else if (direction.equals("l"))
+			for(int xCord = 0; xCord < productLength; xCord++)
+				product = product * inputMatrix.get(y).get(x - xCord); 
+		
+		else if (direction.equals("ur"))
+			for(int xyCord = 0; xyCord < productLength; xyCord++)
+				product = product * inputMatrix.get(y - xyCord).get(x + xyCord); 
+		
+		else if (direction.equals("ul"))
+			for(int xyCord = 0; xyCord < productLength; xyCord++)
+				product = product * inputMatrix.get(y - xyCord).get(x - xyCord); 
+		
+		else if (direction.equals("dr"))
+			for(int xyCord = 0; xyCord < productLength; xyCord++)
+				product = product * inputMatrix.get(y + xyCord).get(x + xyCord); 
+		
+		else if (direction.equals("dl"))
+			for(int xyCord = 0; xyCord < productLength; xyCord++)
+				product = product * inputMatrix.get(y + xyCord).get(x - xyCord); 
+		
+		return product; 
+	}
+	
+	public static void max (int product){
+		if(product > maxProduct)
+			maxProduct = product; 
 	}
 }
