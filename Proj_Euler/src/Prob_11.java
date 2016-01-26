@@ -62,6 +62,10 @@ public class Prob_11 {
 	public static void main(String[] args) throws IOException{
 		
 		try{
+			/*
+			 * Create file object, parse it into a matrix and then look through 
+			 * matrix to find the maximum 4 digit product. 
+			 */
 			File inputFile = new File("c:\\Users\\Hugo Lucas\\Documents\\Prob_11_Info.txt"); 
 			inputMatrix = fileToMatrix(inputFile); 
 			traverseMatrix(inputMatrix); 
@@ -74,15 +78,34 @@ public class Prob_11 {
 	}
 	
 	public static void traverseMatrix (ArrayList<ArrayList<Integer>> matrix){
-		
+		/*
+		 * Looks at every row in the matrix
+		 */
 		for (int y = 0; y < matrix.size(); y ++){
+			/*
+			 * There should be the same number of rows above a given row y, so 
+			 * these booleans will be constant for any given row. 
+			 */
 			boolean down = down(y); 
 			boolean up = up(y);
 			
+			/*
+			 * Looks through every element in a row. 
+			 */
 			for (int x = 0; x < matrix.get(y).size(); x++){
+				/*
+				 * These booleans will not be constant so they 
+				 * must be determined for every element in a row
+				 */
 				boolean right = right(x); 
 				boolean left = left(x);
 				
+				/*
+				 * For a given element (x,y) we check if there 
+				 * are enough numbers in any given direction to 
+				 * calculate a 4 digit product. If so, calculate the
+				 * product and compare it to the current max. 
+				 */
 				if(down)
 					max(computeProduct("d", x, y));
 				if(up)
@@ -104,13 +127,29 @@ public class Prob_11 {
 		} 
 	}
 	
+	/*
+	 * Given a file object, this method will return a "matrix" representation of the 
+	 * contents. 
+	 */
 	public static ArrayList<ArrayList<Integer>> fileToMatrix (File input) throws IOException{
+		/*
+		 * Create a two dimensional array list. Loop is to add the correct number 
+		 * of "child" lists to the master "mother" list. 
+		 */
 		ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>> (width);
 		for(int i = 0; i < width; i++)
 			matrix.add(new ArrayList<Integer>(height)); 
 		
 		BufferedReader fileReader = new BufferedReader(new FileReader (input));
 		
+		/*
+		 * Read a complete line of the file and input every number into the 
+		 * corresponding child list. Because the numbers are always two digits, 
+		 * this will read two characters at a time. The first digit must be 
+		 * multiplied by 10 in order to make sure the correct number is input
+		 * into the list (e.g. 17 will be read as "1" and "7" so to input 17 
+		 * we do (1x10) + 7 = 17).
+		 */
 		int row = 0; 
 		while(fileReader.ready()){
 			char buf[] = fileReader.readLine().toCharArray();
@@ -125,6 +164,10 @@ public class Prob_11 {
 		return matrix;
 	}
 	
+	/*
+	 * The following four methods just check to see if there 
+	 * are 3 additional numbers in each direction. 
+	 */
 	public static boolean up (int y){
 		if ( y <= 2)
 			return false; 
@@ -149,13 +192,17 @@ public class Prob_11 {
 		return true; 
 	}
 	
+	/*
+	 * Given a string code, this method calculates the four number
+	 * product using a four loop. 
+	 */
 	public static int computeProduct(String direction, int x, int y){
 		int product = 1; 
 		
 		if(direction.equals("u"))
 			for(int yCord = 0; yCord < productLength; yCord++)
 				product = product * inputMatrix.get(y - yCord).get(x); 
-		
+
 		else if (direction.equals("d"))
 			for(int yCord = 0; yCord < productLength; yCord++)
 				product = product * inputMatrix.get(y + yCord).get(x); 
@@ -187,6 +234,9 @@ public class Prob_11 {
 		return product; 
 	}
 	
+	/*
+	 * Tracks the current maximum product. Mainly created to save space. 
+	 */
 	public static void max (int product){
 		if(product > maxProduct)
 			maxProduct = product; 
